@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/layout :: head('My Job Listings')">
+    <th:block th:replace="layout/main :: head"></th:block>
+    <title>My Job Listings - DIU Job Portal</title>
+</head>
+<body>
+    <th:block th:replace="layout/main :: nav"></th:block>
+    
+    <div class="container mt-5">
+        <div class="d-flex justify-content-between align-items-center">
+            <h2>My Job Listings</h2>
+            <a th:href="@{/employer/jobs/new}" class="btn btn-primary">Post New Job</a>
+        </div>
+        
+        <div class="alert alert-success" th:if="${successMessage}" th:text="${successMessage}"></div>
+        
+        <div class="table-responsive mt-4">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Location</th>
+                        <th>Posted Date</th>
+                        <th>Applications</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="job : ${jobs}">
+                        <td><a th:href="@{/employer/jobs/{id}(id=${job.id})}" th:text="${job.title}">Job Title</a></td>
+                        <td th:text="${job.location}">Location</td>
+                        <td th:text="${#temporals.format(job.postedDate, 'dd-MM-yyyy')}">01-01-2025</td>
+                        <td th:text="${job.applications.size()}">0</td>
+                        <td>
+                            <a th:href="@{/employer/jobs/{id}/edit(id=${job.id})}" class="btn btn-sm btn-warning">Edit</a>
+                            <a th:href="@{/employer/jobs/{id}/delete(id=${job.id})}" class="btn btn-sm btn-danger"
+                               onclick="return confirm('Are you sure you want to delete this job?')">Delete</a>
+                        </td>
+                    </tr>
+                    <tr th:if="${jobs.empty}">
+                        <td colspan="5">No jobs posted yet. <a th:href="@{/employer/jobs/new}">Create your first job posting</a>.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <th:block th:replace="layout/main :: footer"></th:block>
+</body>
+</html>

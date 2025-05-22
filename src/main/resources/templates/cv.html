@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/layout :: head('Your Professional CV')">
+    <meta charset="UTF-8">
+    <title>Your Professional CV</title>
+    <style>
+        .cv-section {
+            margin-bottom: 25px;
+        }
+        .cv-actions {
+            position: sticky;
+            top: 20px;
+            z-index: 100;
+        }
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        .cv-placeholder {
+            text-align: center;
+            padding: 50px 0;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            .container {
+                width: 100%;
+                max-width: 100%;
+            }
+            .card {
+                border: none !important;
+            }
+            .card-header {
+                background-color: #f8f9fa !important;
+                color: #000 !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary no-print">
+        <div class="container">
+            <a class="navbar-brand" th:href="@{/jobseeker/dashboard}">DIU Job Portal</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/jobseeker/dashboard}">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/jobseeker/jobs}">Browse Jobs</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/jobseeker/applications}">My Applications</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/jobseeker/profile}">My Profile</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container my-5">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h3 class="mb-0">Your Professional CV</h3>
+                    </div>
+                    <div class="card-body">
+                        <!-- CV content placeholder when first loading the page -->
+                        <div th:if="${showCvContent == null || showCvContent == false}" class="cv-placeholder" id="cvPlaceholder">
+                            <div class="mb-4">
+                                <i class="bi bi-file-earmark-text" style="font-size: 3rem;"></i>
+                            </div>
+                            <h4>Your CV will appear here</h4>
+                            <p class="text-muted">Click the "Generate CV" button to create your professional CV based on your profile information.</p>
+                        </div>
+                        
+                        <!-- Actual CV content that will be shown after generation -->
+                        <div id="cvContent" th:if="${cv != null && showCvContent == true}" th:utext="${cv.fullCvContent}">
+                            <!-- CV content will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card cv-actions no-print">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">Actions</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-2">
+                            <!-- Generate CV button (Primary action when first loading the page) -->
+                            <button id="generateCV" class="btn btn-primary">
+                                <i class="bi bi-magic"></i> Generate CV
+                            </button>
+                            
+                            <!-- These buttons are disabled until CV is generated -->
+                            <button id="printCV" class="btn btn-outline-primary" th:disabled="${cv == null}">
+                                <i class="bi bi-printer"></i> Print CV
+                            </button>
+                            <button id="downloadCV" class="btn btn-success" th:disabled="${cv == null}">
+                                <i class="bi bi-download"></i> Download as PDF
+                            </button>
+                            <button id="regenerateCV" class="btn btn-info" th:disabled="${cv == null}">
+                                <i class="bi bi-arrow-clockwise"></i> Regenerate CV
+                            </button>
+                            <a th:href="@{/jobseeker/dashboard}" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left"></i> Back to Dashboard
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card mt-4 no-print">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">CV Sections</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="list-group list-group-flush">
+                            <button class="list-group-item list-group-item-action" onclick="scrollToSection('contact-info')" th:disabled="${cv == null}">Contact Information</button>
+                            <button class="list-group-item list-group-item-action" onclick="scrollToSection('professional-summary')" th:disabled="${cv == null}">Professional Summary</button>
+                            <button class="list-group-item list-group-item-action" onclick="scrollToSection('skills')" th:disabled="${cv == null}">Skills</button>
+                            <button class="list-group-item list-group-item-action" onclick="scrollToSection('work-experience')" th:disabled="${cv == null}">Work Experience</button>
+                            <button class="list-group-item list-group-item-action" onclick="scrollToSection('education')" th:disabled="${cv == null}">Education</button>
+                            <button class="list-group-item list-group-item-action" onclick="scrollToSection('interests')" th:disabled="${cv == null}">Interests</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+		    <!-- Loading spinner -->
+		    <div id="loadingSpinner" class="loading-spinner">
+		        <div class="spinner-border text-primary" role="status">
+		            <span class="visually-hidden">Loading...</span>
+		        </div>
+		        <p class="mt-2">Generating your CV...</p>
+		    </div>
+		</div>
+    
+    <footer th:replace="fragments/layout :: footer"></footer>
+    
+    <!-- Include html2pdf.js for PDF generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/2.1.0/showdown.min.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Generate CV (Main function now)
+            document.getElementById('generateCV').addEventListener('click', function() {
+                // Show loading spinner
+                document.getElementById('loadingSpinner').style.display = 'block';
+                
+                // Make API call to generate new CV
+                fetch('/api/cv/generate')
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Failed to generate CV');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        // Hide placeholder if it exists
+                        const placeholder = document.getElementById('cvPlaceholder');
+                        if (placeholder) {
+                            placeholder.style.display = 'none';
+                        }
+                        
+                        // Update the CV content with the new data
+                        const cvContent = document.getElementById('cvContent');
+                        
+                        // Create if doesn't exist
+                        if (!document.getElementById('cvContent')) {
+                            const newCvContent = document.createElement('div');
+                            newCvContent.id = 'cvContent';
+                            document.querySelector('.card-body').appendChild(newCvContent);
+                        }
+                        
+                        // Convert markdown to HTML
+                        const converter = new showdown.Converter();
+                        const html = converter.makeHtml(data.fullContent);
+                        
+                        // Update the content
+                        cvContent.innerHTML = html;
+                        
+                        // Enable the other buttons
+                        document.getElementById('printCV').disabled = false;
+                        document.getElementById('downloadCV').disabled = false;
+                        document.getElementById('regenerateCV').disabled = false;
+                        
+                        // Enable section navigation buttons
+                        const sectionButtons = document.querySelectorAll('.list-group-item-action');
+                        sectionButtons.forEach(button => {
+                            button.disabled = false;
+                        });
+                        
+                        // Hide loading spinner
+                        document.getElementById('loadingSpinner').style.display = 'none';
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Failed to generate CV. Please try again.');
+                        // Hide loading spinner
+                        document.getElementById('loadingSpinner').style.display = 'none';
+                    });
+            });
+            
+            // Print CV
+            document.getElementById('printCV').addEventListener('click', function() {
+                if (document.getElementById('cvContent').innerHTML.trim() !== '') {
+                    window.print();
+                } else {
+                    alert('Please generate your CV first.');
+                }
+            });
+            
+            // Download CV as PDF
+            document.getElementById('downloadCV').addEventListener('click', function() {
+                const cvContent = document.getElementById('cvContent');
+                
+                if (cvContent.innerHTML.trim() === '') {
+                    alert('Please generate your CV first.');
+                    return;
+                }
+                
+                // Configure html2pdf options
+                const opt = {
+                    margin: [15, 15],
+                    filename: 'professional_cv.pdf',
+                    image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: { scale: 2 },
+                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                };
+                
+                // Generate PDF
+                html2pdf().set(opt).from(cvContent).save();
+            });
+            
+            // Regenerate CV
+            document.getElementById('regenerateCV').addEventListener('click', function() {
+                if (document.getElementById('cvContent').innerHTML.trim() === '') {
+                    alert('Please generate your CV first.');
+                    return;
+                }
+                
+                // Show loading spinner
+                document.getElementById('loadingSpinner').style.display = 'block';
+                
+                // Make API call to generate new CV
+                fetch('/api/cv/generate')
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Failed to generate CV');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        // Update the CV content with the new data
+                        const cvContent = document.getElementById('cvContent');
+                        
+                        // Convert markdown to HTML
+                        const converter = new showdown.Converter();
+                        const html = converter.makeHtml(data.fullContent);
+                        
+                        // Update the content
+                        cvContent.innerHTML = html;
+                        
+                        // Hide loading spinner
+                        document.getElementById('loadingSpinner').style.display = 'none';
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Failed to generate CV. Please try again.');
+                        // Hide loading spinner
+                        document.getElementById('loadingSpinner').style.display = 'none';
+                    });
+            });
+        });
+        
+        // Function to scroll to specific sections
+        function scrollToSection(sectionId) {
+            // Find headers that might contain this section
+            const headers = document.querySelectorAll('h1, h2, h3, h4, h5, h6');
+            let targetElement = null;
+            
+            // Look for section heading that contains the text
+            for (const header of headers) {
+                const text = header.textContent.toLowerCase();
+                if (sectionId === 'contact-info' && (text.includes('contact') || text.includes('information'))) {
+                    targetElement = header;
+                    break;
+                } else if (sectionId === 'professional-summary' && (text.includes('professional') || text.includes('summary') || text.includes('profile'))) {
+                    targetElement = header;
+                    break;
+                } else if (sectionId === 'skills' && text.includes('skills')) {
+                    targetElement = header;
+                    break;
+                } else if (sectionId === 'work-experience' && (text.includes('work') || text.includes('experience'))) {
+                    targetElement = header;
+                    break;
+                } else if (sectionId === 'education' && text.includes('education')) {
+                    targetElement = header;
+                    break;
+                } else if (sectionId === 'interests' && (text.includes('interests') || text.includes('hobbies'))) {
+                    targetElement = header;
+                    break;
+                }
+            }
+            
+            // Scroll to element if found
+            if (targetElement) {
+                targetElement.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+    </script>
+</body>
+</html>

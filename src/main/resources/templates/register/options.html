@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/layout :: head('Register')">
+    <title>Register - DIU Job Portal</title>
+</head>
+<body>
+    <th:block th:replace="layout/main :: nav"></th:block>
+    
+    <div class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow">
+                    <div class="card-header bg-primary text-white">
+                        <h3 class="card-title mb-0">Choose Registration Type</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <div class="card h-100">
+                                    <div class="card-body text-center">
+                                        <i class="bi bi-person-badge fs-1 text-primary mb-3"></i>
+                                        <h4>Job Seeker</h4>
+                                        <p>Looking for job opportunities? Register as a job seeker to browse and apply for jobs.</p>
+                                        <a th:href="@{/register/jobseeker}" class="btn btn-primary">Register as Job Seeker</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="card h-100">
+                                    <div class="card-body text-center">
+                                        <i class="bi bi-building fs-1 text-primary mb-3"></i>
+                                        <h4>Employer</h4>
+                                        <p>Looking to hire talent? Register as an employer to post job listings and find candidates.</p>
+                                        <a th:href="@{/register/employer}" class="btn btn-primary">Register as Employer</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer text-center">
+                        <p class="mb-0">Already have an account? <a th:href="@{/login}">Login here</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <th:block th:replace="layout/main :: footer"></th:block>
+</body>
+</html>

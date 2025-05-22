@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/layout :: head('Employer Profile')">
+    <title>Employer Profile - DIU Job Portal</title>
+</head>
+<body>
+    <th:block th:replace="layout/main :: nav"></th:block>
+    
+    <div class="container mt-5">
+        <div class="d-flex justify-content-between align-items-center">
+            <h2>Employer Profile</h2>
+            <!-- Logout button -->
+            <form th:action="@{/logout}" method="post" class="d-inline">
+                <button type="submit" class="btn btn-outline-danger">Logout</button>
+            </form>
+        </div>
+        
+        <div class="alert alert-success" th:if="${successMessage}" th:text="${successMessage}"></div>
+        
+        <div class="card mt-4">
+            <div class="card-header">
+                <ul class="nav nav-tabs card-header-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="view-tab" data-bs-toggle="tab" href="#view">View Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="edit-tab" data-bs-toggle="tab" href="#edit">Edit Profile</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="card-body">
+                <div class="tab-content">
+                    <!-- View Profile Tab -->
+                    <div class="tab-pane fade show active" id="view">
+                        <div class="row mb-3">
+                            <div class="col-md-3 fw-bold">Company Name:</div>
+                            <div class="col-md-9" th:text="${profile.fullName}">Company Name</div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-3 fw-bold">Phone Number:</div>
+                            <div class="col-md-9" th:text="${profile.phoneNumber}">Phone Number</div>
+                        </div>
+                        <a th:href="@{/employer/jobs}" class="btn btn-primary mt-3">Manage Job Listings</a>
+                    </div>
+                    
+                    <!-- Edit Profile Tab -->
+                    <div class="tab-pane fade" id="edit">
+                        <form th:action="@{/employer/profile}" method="post" th:object="${profile}">
+                            <div class="mb-3">
+                                <label for="fullName" class="form-label">Company Name</label>
+                                <input type="text" class="form-control" id="fullName" th:field="*{fullName}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="phoneNumber" class="form-label">Phone Number</label>
+                                <input type="text" class="form-control" id="phoneNumber" th:field="*{phoneNumber}">
+                            </div>
+                            <button type="submit" class="btn btn-primary">Update Profile</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS (required for the tabs to work) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <th:block th:replace="layout/main :: footer"></th:block>
+</body>
+</html>

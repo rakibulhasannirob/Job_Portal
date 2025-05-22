@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/dashboard-layout}">
+	  <head th:replace="fragments/layout :: head('Manage Jobs')">
+    <title>Manage Jobs</title>
+</head>
+<body>
+	
+	<!-- Navbar -->
+	<nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
+	    <div class="container">
+<a class="navbar-brand" th:href="@{#}" onclick="return false;">DIU Job Portal</a>
+	        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+	            <span class="navbar-toggler-icon"></span>
+	        </button>
+	        <div class="collapse navbar-collapse" id="navbarNav">
+	            <ul class="navbar-nav me-auto">
+	                <li class="nav-item">
+	                    <a class="nav-link" th:href="@{/admin/dashboard}">Dashboard</a>
+	                </li>
+	                <li class="nav-item">
+	                    <a class="nav-link" th:href="@{/admin/users}">Manage Users</a>
+	                </li>
+	                <li class="nav-item">
+	                    <a class="nav-link" th:href="@{/admin/jobs}">Manage Jobs</a>
+	                </li>
+	            </ul>
+	            
+	            <!-- Logout Button -->
+	            <ul class="navbar-nav">
+	                <li class="nav-item">
+	                    <form th:action="@{/logout}" method="post">
+	                        <button type="submit" class="btn btn-outline-light">Logout</button>
+	                    </form>
+	                </li>
+	            </ul>
+	        </div>
+	    </div>
+	</nav>
+	
+    <div layout:fragment="content">
+        <div class="container mt-5">
+            <h2>Manage Job Listings</h2>
+            
+            <div class="alert alert-success" th:if="${successMessage}" th:text="${successMessage}"></div>
+            
+            <div class="table-responsive mt-4">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Title</th>
+                            <th>Company</th>
+                            <th>Location</th>
+                            <th>Posted Date</th>
+                            <th>Employer</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="job : ${jobs}">
+                            <td th:text="${job.id}">1</td>
+                            <td th:text="${job.title}">Job Title</td>
+                            <td th:text="${job.companyName}">Company Name</td>
+                            <td th:text="${job.location}">Location</td>
+                            <td th:text="${#temporals.format(job.postedDate, 'dd-MM-yyyy')}">01-01-2025</td>
+                            <td th:text="${job.employer.username}">employer</td>
+                            <td>
+                                <a th:href="@{/admin/jobs/{id}/delete(id=${job.id})}" 
+                                   class="btn btn-danger btn-sm"
+                                   onclick="return confirm('Are you sure you want to delete this job?')">Delete</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

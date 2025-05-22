@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/dashboard-layout}">
+	  <head th:replace="fragments/layout :: head('Admin Dashboard')">
+    <title>Admin Dashboard</title>
+</head>
+<body>
+	<nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
+	      <div class="container">
+<a class="navbar-brand" th:href="@{#}" onclick="return false;">DIU Job Portal</a>
+	          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+	              <span class="navbar-toggler-icon"></span>
+	          </button>
+	          <div class="collapse navbar-collapse" id="navbarNav">
+	              <ul class="navbar-nav me-auto">
+	                  <li class="nav-item">
+	                      <a class="nav-link" th:href="@{/admin/dashboard}">Dashboard</a>
+	                  </li>
+	                  <li class="nav-item">
+	                      <a class="nav-link" th:href="@{/admin/users}">Manage Users</a>
+	                  </li>
+	                  <li class="nav-item">
+	                      <a class="nav-link" th:href="@{/admin/jobs}">Manage Jobs</a>
+	                  </li>
+	              </ul>
+	              
+	              <!-- Logout Button -->
+	              <ul class="navbar-nav">
+	                  <li class="nav-item">
+	                      <form th:action="@{/logout}" method="post">
+	                          <button type="submit" class="btn btn-outline-light">Logout</button>
+	                      </form>
+	                  </li>
+	              </ul>
+	          </div>
+	      </div>
+	  </nav>
+	  
+	  
+	
+
+	  
+    <div layout:fragment="content">
+        <div class="container mt-5">
+            <h2>Admin Dashboard</h2>
+            <div class="row mt-4">
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Users</h5>
+                            <p class="card-text">Total Users: <span th:text="${userCount}">0</span></p>
+                            <a th:href="@{/admin/users}" class="btn btn-primary">View All Users</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Job Listings</h5>
+                            <p class="card-text">Total Jobs: <span th:text="${jobCount}">0</span></p>
+                            <a th:href="@{/admin/jobs}" class="btn btn-primary">View All Jobs</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Applications</h5>
+                            <p class="card-text">Total Applications: <span th:text="${applicationCount}">0</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+	<div class="container" style="display: flex; justify-content: center; align-items: center; height: 100vh;">
+	      <div class="alert alert-info" style="text-align: center; padding: 25px 50px; background-color: #1e90ff; border-radius: 12px; font-size: 1.5em; box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2); width: 80%; max-width: 600px; color: #fff; font-weight: bold;">
+	          <p style="margin: 0;">
+	               Welcome, Admin <span th:text="${adminName}" style="font-size: 2em; color: #ffdd57;">Admin</span>! 🚀 You're managing users,and job postings in the portal. 💼
+	          </p>
+	      </div>
+	  </div>
+	
+	
+</body>
+</html>

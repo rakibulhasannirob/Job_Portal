@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/layout :: head('Job Seeker Dashboard')">
+    <meta charset="UTF-8">
+    <title>Job Seeker Dashboard</title>
+</head>
+<body>
+	<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+		    <div class="container">
+<a class="navbar-brand" th:href="@{/jobseeker/dashboard}">DIU Job Portal</a>
+		        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+		            <span class="navbar-toggler-icon"></span>
+		        </button>
+		        <div class="collapse navbar-collapse" id="navbarNav">
+		            <ul class="navbar-nav me-auto">
+		                <li class="nav-item">
+		                    <a class="nav-link active" th:href="@{/jobseeker/dashboard}">Dashboard</a>
+		                </li>
+		                <li class="nav-item">
+		                    <a class="nav-link active" th:href="@{/jobseeker/jobs}">Browse Jobs</a>
+		                </li>
+		                <li class="nav-item">
+		                    <a class="nav-link active" th:href="@{/jobseeker/applications}">My Applications</a>
+		                </li>
+		                <li class="nav-item">
+		                    <a class="nav-link active" th:href="@{/jobseeker/profile}">My Profile</a>
+		                </li>
+		            </ul>
+		           
+		        </div>
+		    </div>
+		</nav>
+    
+    <div class="container my-5">
+        <div class="row">
+            <div class="col-md-12">
+                <h2>Welcome, <span th:text="${user.username}"></span>!</h2>
+                <p class="lead">Manage your job applications and profile</p>
+                <hr>
+            </div>
+        </div>
+        
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="card text-white bg-primary mb-3">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">My Applications</h5>
+                        <p class="card-text display-4" th:text="${applications.size()}">0</p>
+                        <a th:href="@{/jobseeker/applications}" class="btn btn-light">View All</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-white bg-success mb-3">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Available Jobs</h5>
+                        <p class="card-text display-4">Browse</p>
+                        <a th:href="@{/jobseeker/jobs}" class="btn btn-light">Find Jobs</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-white bg-info mb-3">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">My Profile</h5>
+                        <p class="card-text display-4">Edit</p>
+                        <a th:href="@{/jobseeker/profile}" class="btn btn-light">Update Profile</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">Recent Applications</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Job Title</th>
+                                        <th>Company</th>
+                                        <th>Applied On</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="jobApp : ${applications}">
+                                        <td th:text="${jobApp.jobListing.title}">Job Title</td>
+                                        <td th:text="${jobApp.jobListing.companyName}">Company</td>
+                                        <td th:text="${#temporals.format(jobApp.applicationDate, 'dd-MM-yyyy')}">Applied Date</td>
+                                        <td>
+                                            <span th:class="${jobApp.status == 'PENDING' ? 'badge bg-warning' : 
+                                                           (jobApp.status == 'REVIEWED' ? 'badge bg-info' : 
+                                                           (jobApp.status == 'ACCEPTED' ? 'badge bg-success' : 'badge bg-danger'))}"
+                                                  th:text="${jobApp.status}">Status</span>
+                                        </td>
+                                        <td>
+                                            <a th:href="@{/jobseeker/jobs/{id}(id=${jobApp.jobListing.id})}" class="btn btn-sm btn-primary">View Job</a>
+                                        </td>
+                                    </tr>
+                                    <tr th:if="${applications.empty}">
+                                        <td colspan="5" class="text-center">You haven't applied to any jobs yet.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+					<!-- Updated Career Recommendations Section -->
+					<!-- Updated Career Recommendations Section -->
+					<div class="row mt-4" th:if="${showCareerRecommendations}">
+					    <div class="col-md-12">
+					        <div class="card">
+					            <div class="card-header bg-success text-white">
+					                <div class="d-flex justify-content-between align-items-center">
+					                    <h5 class="mb-0">AI Career Recommendations(BETA)</h5>
+					                    <a th:href="@{/jobseeker/career-recommendations}" class="btn btn-sm btn-light">View Details</a>
+					                </div>
+					            </div>
+					            <div class="card-body">
+					                <div class="row">
+					                    <div class="col-md-8">
+					                        <h6>Personalized Career Guidance</h6>
+					                        <p>Our AI can analyze your profile and provide tailored job recommendations, suggest courses to enhance your skills, and offer career path guidance.</p>
+					                    </div>
+					                    <div class="col-md-4 text-center">
+					                        <a th:href="@{/jobseeker/career-recommendations}" class="btn btn-success btn-lg mt-2">
+					                            View Recommendations
+					                        </a>
+					                    </div>
+					                </div>
+					            </div>
+					        </div>
+					    </div>
+					</div>
+
+					 <!-- CV Generation Section -->
+					    <div class="row mt-4">
+					        <div class="col-md-12">
+					            <div class="card">
+					                <div class="card-header bg-info text-white">
+					                    <h5 class="mb-0">Professional CV Generator (BETA)</h5>
+					                </div>
+					                <div class="card-body">
+					                    <div class="row">
+					                        <div class="col-md-8">
+					                            <h6>AI-Powered CV Generator</h6>
+					                            <p>Generate a professional CV based on your profile information with just one click!</p>
+					                            <div class="alert alert-info" th:if="${profileComplete == false}">
+					                                <i class="bi bi-info-circle"></i> Please complete your profile to generate a CV.
+					                            </div>
+					                        </div>
+					                        <div class="col-md-4 text-center">
+					                            <a th:href="@{/jobseeker/cv}" class="btn btn-info btn-lg mt-2" th:classappend="${profileComplete == false ? 'disabled' : ''}">
+					                               Let's' Generate CV Using AI
+					                            </a>
+					                        </div>
+					                    </div>
+					                </div>
+					            </div>
+					        </div>
+					    </div>
+					</div>
+    
+    <footer th:replace="fragments/layout :: footer"></footer>
+</body>
+</html>

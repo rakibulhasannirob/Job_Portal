@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/layout :: head('Employer Dashboard')">
+    <th:block th:replace="layout/main :: head"></th:block>
+    <title>Employer Dashboard - DIU Job Portal</title>
+</head>
+<body>
+    <th:block th:replace="layout/main :: nav"></th:block>
+    <div class="container my-5">
+        <div class="row">
+            <div class="col-md-12">
+                <h2>Welcome, <span th:text="${user.username}">Employer</span>!</h2>
+                <p class="lead">Manage your job listings and company profile</p>
+                <hr>
+            </div>
+        </div>
+        
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="card text-white bg-primary mb-3">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Your Job Listings</h5>
+                        <p class="card-text display-4" th:text="${jobs.size()}">0</p>
+                        <a th:href="@{/employer/jobs}" class="btn btn-light">View Jobs</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-white bg-success mb-3">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Create Job</h5>
+                        <p class="card-text display-4">New</p>
+                        <a th:href="@{/employer/jobs/new}" class="btn btn-light">Post Job</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-white bg-info mb-3">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Company Profile</h5>
+                        <p class="card-text display-4">Edit</p>
+                        <a th:href="@{/employer/profile}" class="btn btn-light">Update Profile</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">Recent Job Postings</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Job Title</th>
+                                        <th>Location</th>
+                                        <th>Posted Date</th>
+                                        <th>Applications</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="job : ${jobs}">
+                                        <td th:text="${job.title}">Job Title</td>
+                                        <td th:text="${job.location}">Location</td>
+                                        <td th:text="${#temporals.format(job.postedDate, 'dd-MM-yyyy')}">01-01-2025</td>
+                                        <td th:text="${job.applications.size()}">0</td>
+                                        <td>
+                                            <a th:href="@{/employer/jobs/{id}(id=${job.id})}" class="btn btn-sm btn-primary">View Details</a>
+                                        </td>
+                                    </tr>
+                                    <tr th:if="${jobs.empty}">
+                                        <td colspan="5" class="text-center">No jobs posted yet. <a th:href="@{/employer/jobs/new}">Create your first job posting</a>.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <th:block th:replace="layout/main :: footer"></th:block>
+</body>
+</html>

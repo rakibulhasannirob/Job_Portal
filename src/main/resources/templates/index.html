@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+	<head th:replace="fragments/layout :: head('Welcome to DIU Job Portal')">
+    <title>Welcome to DIU Job Portal</title>
+</head>
+<body>
+	<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+	    <div class="container">
+	        <a class="navbar-brand" th:href="@{/}">DIU Job Portal</a>
+	        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+	            <span class="navbar-toggler-icon"></span>
+	        </button>
+	        <div class="collapse navbar-collapse" id="navbarNav">
+	            <!-- For anonymous users -->
+	            <ul class="navbar-nav me-auto" sec:authorize="isAnonymous()">
+	                <li class="nav-item">
+	                    <a class="nav-link" th:href="@{/login}">Login</a>
+	                </li>
+	                <li class="nav-item">
+	                    <a class="nav-link" th:href="@{/register}">Register</a>
+	                </li>
+	            </ul>
+	            
+	            <!-- For jobseekers -->
+	            <ul class="navbar-nav me-auto" sec:authorize="hasRole('ROLE_JOBSEEKER')">
+	                <li class="nav-item">
+	                    <a class="nav-link" th:href="@{/jobseeker/dashboard}">Dashboard</a>
+	                </li>
+	                <li class="nav-item">
+	                    <a class="nav-link active" th:href="@{/jobseeker/jobs}">Browse Jobs</a>
+	                </li>
+	                <li class="nav-item">
+	                    <a class="nav-link" th:href="@{/jobseeker/applications}">My Applications</a>
+	                </li>
+	                <li class="nav-item">
+	                    <a class="nav-link" th:href="@{/jobseeker/profile}">My Profile</a>
+	                </li>
+	            </ul>
+	            
+	            <!-- For employers -->
+	            <ul class="navbar-nav me-auto" sec:authorize="hasRole('ROLE_EMPLOYER')">
+	                <li class="nav-item">
+	                    <a class="nav-link" th:href="@{/employer/dashboard}">Dashboard</a>
+	                </li>
+	                <li class="nav-item">
+	                    <a class="nav-link" th:href="@{/employer/jobs}">My Jobs</a>
+	                </li>
+	                <li class="nav-item">
+	                    <a class="nav-link" th:href="@{/employer/jobs/new}">Post a Job</a>
+	                </li>
+	                <li class="nav-item">
+	                    <a class="nav-link" th:href="@{/employer/profile}">Company Profile</a>
+	                </li>
+	            </ul>
+	            
+	            <!-- Logout button for authenticated users -->
+	            <form th:action="@{/logout}" method="post" class="d-flex" sec:authorize="isAuthenticated()">
+	                <button class="btn btn-light" type="submit">Logout</button>
+	            </form>
+	        </div>
+	    </div>
+	</nav>
+    <!-- Hero Section -->
+    <div class="bg-primary text-white py-5">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h1 class="display-4 fw-bold">Find Your Dream Job Today</h1>
+                    <p class="lead">Connect with top employers and discover opportunities that match your skills and career goals.</p>
+                    <div class="mt-4">
+                        <a th:href="@{/jobseeker/jobs}" sec:authorize="hasRole('ROLE_JOBSEEKER')" class="btn btn-light btn-lg me-2">Browse Jobs</a>
+                        <a th:href="@{/register}" sec:authorize="isAnonymous()" class="btn btn-light btn-lg me-2">Get Started</a>
+                        <a th:href="@{/employer/jobs/new}" sec:authorize="hasRole('ROLE_EMPLOYER')" class="btn btn-light btn-lg">Post a Job</a>
+                    </div>
+                </div>
+               
+            </div>
+        </div>
+    </div>
+    
+    <!-- Features Section -->
+    <div class="container my-5">
+        <h2 class="text-center mb-5">Why Choose DIU Job Portal?</h2>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body text-center">
+                        <i class="bi bi-search fs-1 text-primary mb-3"></i>
+                        <h3 class="card-title">Discover Opportunities</h3>
+                        <p class="card-text">Browse thousands of job listings from top companies across industries.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body text-center">
+                        <i class="bi bi-building fs-1 text-primary mb-3"></i>
+                        <h3 class="card-title">Connect with Employers</h3>
+                        <p class="card-text">Direct application process to connect with your future employer.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body text-center">
+                        <i class="bi bi-graph-up-arrow fs-1 text-primary mb-3"></i>
+                        <h3 class="card-title">Grow Your Career</h3>
+                        <p class="card-text">Find opportunities that align with your career goals and aspirations.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Call to Action -->
+    <div class="bg-light py-5">
+        <div class="container text-center">
+            <h2>Ready to Take the Next Step in Your Career?</h2>
+            <p class="lead mb-4">Join thousands of job seekers and employers on DIU Job Portal</p>
+            <a th:href="@{/register}" sec:authorize="isAnonymous()" class="btn btn-primary btn-lg">Sign Up Now</a>
+            <a th:href="@{/jobseeker/jobs}" sec:authorize="hasRole('ROLE_JOBSEEKER')" class="btn btn-primary btn-lg">Browse Jobs</a>
+            <a th:href="@{/employer/jobs/new}" sec:authorize="hasRole('ROLE_EMPLOYER')" class="btn btn-primary btn-lg">Post a Job</a>
+        </div>
+    </div>
+    
+    <th:block th:replace="layout/main :: footer"></th:block>
+</body>
+</html>
